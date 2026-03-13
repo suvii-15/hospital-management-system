@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Appointments Management</title>
+
+
+<style>
+body{
+    font-family: Arial;
+    background:#f4f8fb;
+    margin:0;
+}
+
+.header{
+    background:linear-gradient(90deg,#ffc107,#fd7e14);
+    color:white;
+    padding:15px 25px;
+    display:flex;
+    justify-content:space-between;
+}
+
+.container{
+    padding:30px;
+}
+
+form{
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 5px 10px rgba(0,0,0,0.1);
+    margin-bottom:30px;
+}
+
+input,select{
+    padding:10px;
+    margin:5px;
+    width:180px;
+}
+
+button{
+    padding:10px 15px;
+    background:#ffc107;
+    border:none;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+table{
+    width:100%;
+    background:white;
+    border-collapse:collapse;
+}
+
+th,td{
+    padding:12px;
+    border-bottom:1px solid #ddd;
+    text-align:center;
+}
+
+th{
+    background:#fd7e14;
+    color:white;
+}
+
+.delete{
+    background:red;
+    color:white;
+}
+</style>
+</head>
+
+<body onload="init();">
+
+<div class="header">
+<h2>Appointments Management</h2>
+<button onclick="logout()">Logout</button>
+</div>
+
+<div class="container">
+
+<!-- BOOK APPOINTMENT -->
+<form onsubmit="addAppointment(event)">
+
+<select id="patient" required>
+<option value="">Select Patient</option>
+</select>
+
+<select id="doctor" required>
+<option value="">Select Doctor</option>
+</select>
+
+<input type="date" id="date" required>
+<input type="time" id="time" required>
+<input type="text" id="reason" placeholder="Reason" required>
+
+<button>Book Appointment</button>
+
+</form>
+
+<!-- TABLE -->
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Patient</th>
+<th>Doctor</th>
+<th>Date</th>
+<th>Time</th>
+<th>Reason</th>
+<th>Status</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody id="appointmentTable"></tbody>
+</table>
+
+</div>
+
+<script>
+
+const API = "http://localhost:3000";
+
+async function init(){
+    await loadPatients();
+    await loadDoctors();
+    await loadAppointments();
+}
+
+/* ===============================
+   LOAD PATIENT DROPDOWN
+================================ */
+async function loadPatients(){
+    const res = await fetch(API + "/patients");
+    const patients = await res.json();
+
+    const select = document.getElementById("patient");
+    select.innerHTML = "<option value=''>Select Patient</option>";
+
+    patients.forEach(p=>{
+        select.innerHTML += `<option value="${p.id}">${p.name}</option>`;
+    });
+}
+
+/* ===============================
+   LOAD DOCTOR DROPDOWN
+================================ */
+async function loadDoctors(){
+    const res = await fetch(API + "/doctors");
+    const doctors = await res.json();
+
+    const select = document.getElementById("doctor");
+    select.innerHTML = "<option value=''>Select Doctor</option>";
+
+    doctors.forEach(d=>{
+        select.innerHTML += `<option value="${d.doctor_id}">${d.name}</option>`;
+    });
+}
+
+/* ===============================
+   ADD APPOINTMENT
+================================ */
+async function addAppointment(e){
+    e.preventDefault();
+
+    const data = {
+        patient_id: document.getElementById("patient").value,
+        doctor_id: document.getElementById("doctor").value,
+        appointment_date: document.getElementById("date").value,
+        appointment_time: document.getElementById("time").value,
+        reason: document.getElementById("reason").value
+    };
+
+    const res = await fetch(API + "/appointments",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify(data)
+    });
+
+    const result = await res.json();
+    alert(result.message);
+
+    e.target.reset();
+    loadAppointments();
+}
+
+/* ===============================
+   LOAD APPOINTMENTS TABLE
+================================ */
+async function loadAppointments(){
+    const res = await fetch(API + "/appointments");
+    const data = await res.json();
+
+    let html = "";
+
+    data.forEach(a=>{
+        html += `
+        <tr>
+            <td>${a.id}</td>
+            <td>${a.patient_name}</td>
+            <td>${a.doctor_name}</td>
+            <td>${new Date(a.appointment_date).toLocaleDateString()}</td>
+            <td>${a.appointment_time}</td>
+            <td>${a.reason}</td>
+            <td>${a.status || "Pending"}</td>
+            <td>
+                <button class="delete" onclick="deleteAppointment(${a.id})">Delete</button>
+            </td>
+        </tr>`;
+    });
+
+    document.getElementById("appointmentTable").innerHTML = html;
+}
+
+/* ===============================
+   DELETE
+================================ */
+async function deleteAppointment(id){
+    if(confirm("Delete appointment?")){
+        await fetch(API + "/appointments/" + id,{
+            method:"DELETE"
+        });
+        loadAppointments();
+    }
+}
+
+</script>
+
+</body>
+</html>

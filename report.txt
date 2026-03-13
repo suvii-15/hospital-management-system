@@ -1,0 +1,165 @@
+HOSPITAL MANAGEMENT SYSTEM
+Project Report
+
+1. INTRODUCTION
+
+Hospital Management System is a web-based application designed to manage hospital operations efficiently. The system helps hospital staff to store and manage patient information, doctor details, appointments, and billing records digitally.
+
+Traditionally, hospitals maintained records manually using paper files. This process was slow, difficult to manage, and prone to errors. With the help of a digital system, hospitals can store information securely and access it easily whenever needed.
+
+The Hospital Management System developed in this project provides a simple interface for managing hospital data using modern web technologies.
+
+---
+
+2. OBJECTIVE OF THE PROJECT
+
+The main objectives of this project are:
+
+• To create a digital system for managing hospital data
+• To simplify patient record management
+• To manage doctor information efficiently
+• To track appointments and hospital visits
+• To maintain billing and revenue information
+• To provide a dashboard that shows hospital statistics
+
+---
+
+3. TECHNOLOGIES USED
+
+The following technologies were used to develop the project:
+
+Frontend Technologies:
+• HTML
+• CSS
+• JavaScript
+
+Backend Technologies:
+• Node.js
+• Express.js
+
+Database:
+• MySQL
+
+Development Tools:
+• Visual Studio Code
+• MySQL Workbench
+• Node.js Runtime
+
+---
+
+4. SYSTEM ARCHITECTURE
+
+The system follows a three-tier architecture:
+
+1. Presentation Layer (Frontend)
+   This layer consists of HTML, CSS, and JavaScript pages that allow users to interact with the system through a web browser.
+
+2. Application Layer (Backend)
+   The backend is developed using Node.js and Express.js. It handles API requests and communicates with the database.
+
+3. Database Layer
+   MySQL database stores all hospital records such as patients, doctors, appointments, and billing details.
+
+---
+
+5. MODULES OF THE SYSTEM
+
+The Hospital Management System contains the following modules:
+
+1. Login Module
+   The login page allows authorized users to access the system using a username and password.
+
+2. Dashboard Module
+   The dashboard displays key hospital statistics such as:
+   • Total patients
+   • Total doctors
+   • Appointments
+   • Revenue
+
+3. Patient Management Module
+   This module allows the user to:
+   • Add new patients
+   • View patient records
+   • Delete patient records
+
+4. Doctor Management Module
+   This module manages doctor information including:
+   • Doctor name
+   • Specialization
+   • Experience
+   • Contact details
+
+5. Appointment Management Module
+   This module helps schedule and track appointments between patients and doctors.
+
+6. Billing Module
+   The billing system records treatment charges and calculates hospital revenue.
+
+---
+
+6. DATABASE DESIGN
+
+The system uses a MySQL database named "hospital_db".
+The following tables are used:
+
+• users – stores login credentials
+• patients – stores patient details
+• doctors – stores doctor information
+• appointments – manages appointment records
+• billing – stores billing and payment data
+
+These tables are connected logically to manage hospital operations effectively.
+
+---
+
+7. FEATURES OF THE SYSTEM
+
+• Secure login system
+• Add and manage patient records
+• Manage doctor information
+• Schedule appointments
+• Track hospital revenue
+• Interactive dashboard
+• User-friendly interface
+• Real-time data updates
+
+---
+
+8. ADVANTAGES OF THE SYSTEM
+
+• Reduces manual paperwork
+• Faster access to hospital data
+• Improves efficiency of hospital staff
+• Organized record management
+• Accurate billing system
+• Easy to maintain and update
+
+---
+
+9. LIMITATIONS
+
+• The system is designed for a small hospital environment
+• Does not include advanced features like online payments
+• Requires internet access to run the web application
+
+---
+
+10. FUTURE ENHANCEMENTS
+
+In future versions, the following features can be added:
+
+• Online appointment booking for patients
+• SMS or email notification system
+• Patient medical history tracking
+• Online payment integration
+• Advanced analytics dashboard
+• Role-based user access control
+
+---
+
+11. CONCLUSION
+
+The Hospital Management System developed in this project successfully demonstrates how web technologies can be used to simplify hospital operations. The system helps manage patients, doctors, appointments, and billing efficiently.
+
+This project provides a foundation for developing more advanced healthcare management systems and highlights the benefits of digital solutions in the healthcare sector.
+

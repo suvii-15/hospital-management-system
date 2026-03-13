@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Patients Management</title>
+<script src="js/auth.js"></script>
+
+<style>
+body{
+    font-family:Arial;
+    background:#f4f8fb;
+    margin:0;
+}
+
+.header{
+    background:#0d6efd;
+    color:white;
+    padding:15px;
+    display:flex;
+    justify-content:space-between;
+}
+
+.container{
+    padding:30px;
+}
+
+form{
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 5px 10px rgba(0,0,0,0.1);
+    margin-bottom:30px;
+}
+
+input,select{
+    padding:10px;
+    margin:5px;
+    width:180px;
+}
+
+button{
+    padding:10px 15px;
+    background:#0d6efd;
+    color:white;
+    border:none;
+    cursor:pointer;
+}
+
+table{
+    width:100%;
+    background:white;
+    border-collapse:collapse;
+}
+
+th,td{
+    padding:12px;
+    border-bottom:1px solid #ddd;
+}
+
+th{
+    background:#0d6efd;
+    color:white;
+}
+
+.delete{
+    background:red;
+}
+</style>
+</head>
+
+<body onload="checkLogin();loadPatients();">
+
+<div class="header">
+<h2>Patient Management</h2>
+<button onclick="logout()">Logout</button>
+</div>
+
+<div class="container">
+
+<form onsubmit="addPatient(event)">
+<input type="text" id="name" placeholder="Name" required>
+<input type="number" id="age" placeholder="Age" required>
+
+<select id="gender">
+<option>Male</option>
+<option>Female</option>
+</select>
+
+<input type="text" id="disease" placeholder="Disease" required>
+<input type="text" id="phone" placeholder="Phone" required>
+
+<button type="submit">Add Patient</button>
+</form>
+
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>Age</th>
+<th>Gender</th>
+<th>Disease</th>
+<th>Phone</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody id="patientTable"></tbody>
+</table>
+
+</div>
+
+<script>
+async function loadPatients(){
+
+    const response = await fetch("http://localhost:3000/patients");
+    const patients = await response.json();
+
+    let html = "";
+
+    patients.forEach(p => {
+
+        html += `
+        <tr>
+            <td>${p.patient_id}</td>
+            <td>${p.name}</td>
+            <td>${p.age}</td>
+            <td>${p.gender}</td>
+            <td>${p.disease}</td>
+            <td>${p.phone}</td>
+            <td>
+                <button onclick="deletePatient(${p.patient_id})" style="background:red;color:white;border:none;padding:6px 10px;border-radius:5px;">
+                Delete
+                </button>
+            </td>
+        </tr>
+        `;
+
+    });
+
+    document.getElementById("patientTable").innerHTML = html;
+
+}
+
+
+
+async function addPatient(event){
+
+    event.preventDefault();
+
+    const data = {
+
+        name: document.getElementById("name").value,
+        age: document.getElementById("age").value,
+        gender: document.getElementById("gender").value,
+        disease: document.getElementById("disease").value,
+        phone: document.getElementById("phone").value
+
+    };
+
+    const response = await fetch("http://localhost:3000/patients",{
+
+        method:"POST",
+
+        headers:{
+            "Content-Type":"application/json"
+        },
+
+        body: JSON.stringify(data)
+
+    });
+
+    const result = await response.json();
+
+    alert(result.message);
+
+    loadPatients();
+
+}
+
+
+
+async function deletePatient(id){
+
+    if(!confirm("Delete this patient?")) return;
+
+    await fetch("http://localhost:3000/patients/"+id,{
+        method:"DELETE"
+    });
+
+    loadPatients();
+
+}
+
+
+
+window.onload = loadPatients;
+
+
+</script>
+</body>
+</html>

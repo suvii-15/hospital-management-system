@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Billing System</title>
+<script src="js/auth.js"></script>
+
+<style>
+body{font-family:Arial;background:#eef4f8;margin:0}
+
+.header{
+background:#dc3545;color:white;padding:15px;
+display:flex;justify-content:space-between
+}
+
+.container{padding:25px}
+
+form{
+background:white;padding:20px;border-radius:10px;
+box-shadow:0 5px 10px rgba(0,0,0,.1);
+margin-bottom:25px
+}
+
+select,input{padding:10px;margin:5px;width:180px}
+
+button{padding:10px 15px;background:#dc3545;color:white;border:none}
+
+table{width:100%;background:white;border-collapse:collapse}
+
+th,td{padding:12px;border-bottom:1px solid #ddd}
+
+th{background:#dc3545;color:white}
+
+.delete{background:black}
+</style>
+</head>
+
+<body onload="checkLogin(); loadPatients(); loadBills();">
+
+<div class="header">
+<h2>Billing & Payments</h2>
+<button onclick="logout()">Logout</button>
+</div>
+
+<div class="container">
+
+<form onsubmit="generateBill(event)">
+<select id="patient"></select>
+
+<input type="number" id="doctor_charge" placeholder="Doctor Charge" required>
+<input type="number" id="medicine_charge" placeholder="Medicine Charge" required>
+<input type="number" id="room_charge" placeholder="Room Charge" required>
+
+<button>Generate Bill</button>
+</form>
+
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Patient</th>
+<th>Doctor</th>
+<th>Medicine</th>
+<th>Room</th>
+<th>Total</th>
+<th>Date</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody id="table"></tbody>
+</table>
+
+</div>
+
+<script>
+
+// load patients dropdown
+async function loadPatients(){
+    let data = await fetch("http://localhost:3000/patients").then(r=>r.json());
+    patient.innerHTML = data.map(p=>`<option value="${p.id}">${p.name}</option>`).join("");
+}
+
+// load bills
+async function loadBills(){
+    let data = await fetch("http://localhost:3000/bills").then(r=>r.json());
+
+    table.innerHTML = data.map(b=>`
+    <tr>
+        <td>${b.id}</td>
+        <td>${b.name}</td>
+        <td>₹${b.doctor_charge}</td>
+        <td>₹${b.medicine_charge}</td>
+        <td>₹${b.room_charge}</td>
+        <td><b>₹${b.total}</b></td>
+        <td>${new Date(b.bill_date).toLocaleDateString()}</td>
+        <td><button class="delete" onclick="deleteBill(${b.id})">Delete</button></td>
+    </tr>`).join("");
+}
+
+// generate bill
+async function generateBill(e){
+    e.preventDefault();
+
+    await fetch("http://localhost:3000/bills",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({
+            patient_id:patient.value,
+            doctor_charge:doctor_charge.value,
+            medicine_charge:medicine_charge.value,
+            room_charge:room_charge.value
+        })
+    });
+
+    loadBills();
+    e.target.reset();
+}
+
+// delete bill
+async function deleteBill(id){
+    if(confirm("Delete bill?")){
+        await fetch(`http://localhost:3000/bills/${id}`,{method:"DELETE"});
+        loadBills();
+    }
+}
+
+</script>
+</body>
+</html>
+
